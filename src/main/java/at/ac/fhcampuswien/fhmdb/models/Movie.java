@@ -58,6 +58,35 @@ public class Movie {
         g5.add(Genre.BIOGRAPHY);
         movies.add(new Movie("The Wolf of Wall Street","Based on the true story of Jordan Belfort...", g5));
 
+        List<Genre> g6 = new ArrayList<>();
+        g6.add(Genre.SCIENCE_FICTION);
+        g6.add(Genre.ACTION);
+        g6.add(Genre.THRILLER);
+        movies.add(new Movie("Inception", "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO...", g6));
+
+        List<Genre> g7 = new ArrayList<>();
+        g7.add(Genre.HORROR);
+        g7.add(Genre.THRILLER);
+        movies.add(new Movie("The Shining", "A family heads to an isolated hotel for the winter where a sinister presence influences the father into violence...", g7));
+
+        List<Genre> g8 = new ArrayList<>();
+        g8.add(Genre.COMEDY);
+        g8.add(Genre.DRAMA);
+        g8.add(Genre.ROMANCE);
+        movies.add(new Movie("500 Days of Summer", "An offbeat romantic comedy about a woman who doesn't believe true love exists, and the man who falls for her...", g8));
+
+        List<Genre> g9 = new ArrayList<>();
+        g9.add(Genre.ACTION);
+        g9.add(Genre.THRILLER);
+        g9.add(Genre.MYSTERY);
+        movies.add(new Movie("The Dark Knight", "When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham...", g9));
+
+        List<Genre> g10 = new ArrayList<>();
+        g10.add(Genre.DRAMA);
+        g10.add(Genre.BIOGRAPHY);
+        g10.add(Genre.ROMANCE);
+        movies.add(new Movie("The Theory of Everything", "A look at the relationship between the famous physicist Stephen Hawking and his wife...", g10));
+
         return movies;
     }
 }
