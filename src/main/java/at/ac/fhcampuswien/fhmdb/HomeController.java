@@ -36,7 +36,7 @@ public class HomeController implements Initializable {
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-    private static List<Movie> filterMovies(List<Movie> movies, String searchQuery, Genre selectedGenre) {
+    public static List<Movie> filterMovies(List<Movie> movies, String searchQuery, Genre selectedGenre) {
         List<Movie> filtered = new ArrayList<>();
         String q = searchQuery == null ? "" : searchQuery.toLowerCase().trim();
         for(Movie m : movies){
@@ -51,7 +51,7 @@ public class HomeController implements Initializable {
         return filtered;
     }
 
-    private static List<Movie> sortMovies(List<Movie> movies, boolean ascending) {
+    public static List<Movie> sortMovies(List<Movie> movies, boolean ascending) {
         movies.sort((m1, m2) -> ascending
                 ? m1.getTitle().compareToIgnoreCase(m2.getTitle())
                 : m2.getTitle().compareToIgnoreCase(m1.getTitle()));
@@ -85,14 +85,5 @@ public class HomeController implements Initializable {
                 sortBtn.setText("Sort (asc)");
             }
         });
-    }
-
-    // test helpers to call the same logic from JUnit
-    public static List<Movie> filterMoviesTestHelper(List<Movie> movies, String searchQuery, Genre selectedGenre) {
-        return filterMovies(movies, searchQuery, selectedGenre);
-    }
-
-    public static List<Movie> sortMoviesTestHelper(List<Movie> movies, boolean ascending) {
-        return sortMovies(movies, ascending);
     }
 }
