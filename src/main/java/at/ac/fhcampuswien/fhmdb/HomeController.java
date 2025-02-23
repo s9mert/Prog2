@@ -11,6 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import java.util.Comparator;
+
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,25 +38,21 @@ public class HomeController implements Initializable {
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-    public static List<Movie> filterMovies(List<Movie> movies, String searchQuery, Genre selectedGenre) {
-        List<Movie> filtered = new ArrayList<>();
-        String q = searchQuery == null ? "" : searchQuery.toLowerCase().trim();
-        for(Movie m : movies){
-            boolean matchesQuery = q.isEmpty()
-                    || m.getTitle().toLowerCase().contains(q)
-                    || m.getDescription().toLowerCase().contains(q);
-            boolean matchesGenre = selectedGenre == null || m.getGenres().contains(selectedGenre);
-            if(matchesQuery && matchesGenre){
-                filtered.add(m);
-            }
-        }
-        return filtered;
+    private boolean ascending = true;
+
+    public static List<Movie> filterMovies(List<Movie> movies, String query, Genre genre) {
+        return movies.stream()
+                .filter(m -> (query == null || query.isEmpty() ||
+                        m.getTitle().toLowerCase().contains(query.toLowerCase()) ||
+                        m.getDescription().toLowerCase().contains(query.toLowerCase())))
+                .filter(m -> genre == null || m.getGenres().contains(genre))
+                .toList();
     }
 
     public static List<Movie> sortMovies(List<Movie> movies, boolean ascending) {
-        movies.sort((m1, m2) -> ascending
-                ? m1.getTitle().compareToIgnoreCase(m2.getTitle())
-                : m2.getTitle().compareToIgnoreCase(m1.getTitle()));
+        movies.sort(ascending ?
+                Comparator.comparing(Movie::getTitle) :
+                Comparator.comparing(Movie::getTitle).reversed());
         return movies;
     }
 
@@ -85,5 +83,18 @@ public class HomeController implements Initializable {
                 sortBtn.setText("Sort (asc)");
             }
         });
+    }
+
+    public List<Movie> getObservableMovies() {
+        return new ArrayList<>(observableMovies);
+    }
+
+    // test helpers to call the same logic from JUnit
+    public static List<Movie> filterMoviesTestHelper(List<Movie> movies, String searchQuery, Genre selectedGenre) {
+        return filterMovies(movies, searchQuery, selectedGenre);
+    }
+
+    public static List<Movie> sortMoviesTestHelper(List<Movie> movies, boolean ascending) {
+        return sortMovies(movies, ascending);
     }
 }
