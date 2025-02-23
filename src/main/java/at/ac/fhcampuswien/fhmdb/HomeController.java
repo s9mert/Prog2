@@ -12,7 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -33,60 +32,34 @@ public class HomeController implements Initializable {
     public JFXButton sortBtn;
 
     public List<Movie> allMovies = Movie.initializeMovies();
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
-    private static List<Movie> filterMovies(List<Movie> movies, String searchQuery, String selectedGenre) {
-        List<Movie> filtered = new ArrayList<>();
-        String q = searchQuery == null ? "" : searchQuery.toLowerCase().trim();
-        String g = selectedGenre == null ? "" : selectedGenre.toUpperCase().trim();
-        for(Movie m : movies){
-            boolean matchesQuery = q.isEmpty() || m.getTitle().toLowerCase().contains(q) || m.getDescription().toLowerCase().contains(q);
-            boolean matchesGenre = g.isEmpty() || m.getGenres().stream().anyMatch(x -> x.equalsIgnoreCase(g));
-            if(matchesQuery && matchesGenre){
-                filtered.add(m);
-            }
-        }
-        return filtered;
-    }
-
-    private static List<Movie> sortMovies(List<Movie> movies, boolean ascending) {
-        movies.sort((m1, m2) -> ascending
-                ? m1.getTitle().compareToIgnoreCase(m2.getTitle())
-                : m2.getTitle().compareToIgnoreCase(m1.getTitle()));
-        return movies;
-    }
+    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        observableMovies.addAll(allMovies);
-        movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> new MovieCell());
+        observableMovies.addAll(allMovies);         // add dummy data to observable list
+
+        // initialize UI stuff
+        movieListView.setItems(observableMovies);   // set data of observable list to list view
+        movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
+
+        // TODO add genre filter items with genreComboBox.getItems().addAll(...)
         genreComboBox.setPromptText("Filter by Genre");
-        genreComboBox.getItems().addAll("ACTION","ADVENTURE","ANIMATION","BIOGRAPHY","COMEDY","CRIME","DRAMA","DOCUMENTARY","FAMILY","FANTASY","HISTORY","HORROR","MUSICAL","MYSTERY","ROMANCE","SCIENCE_FICTION","SPORT","THRILLER","WAR","WESTERN");
 
-        searchBtn.setOnAction(actionEvent -> {
-            String searchQuery = searchField.getText() == null ? "" : searchField.getText().trim();
-            String selectedGenre = genreComboBox.getValue() == null ? "" : genreComboBox.getValue().toString().trim();
-            observableMovies.clear();
-            observableMovies.addAll(filterMovies(allMovies, searchQuery, selectedGenre));
-        });
+        // TODO add event handlers to buttons and call the regarding methods
+        // either set event handlers in the fxml file (onAction) or add them here
 
+        // Sort button example:
         sortBtn.setOnAction(actionEvent -> {
             if(sortBtn.getText().equals("Sort (asc)")) {
-                observableMovies.setAll(sortMovies(new ArrayList<>(observableMovies), true));
+                // TODO sort observableMovies ascending
                 sortBtn.setText("Sort (desc)");
             } else {
-                observableMovies.setAll(sortMovies(new ArrayList<>(observableMovies), false));
+                // TODO sort observableMovies descending
                 sortBtn.setText("Sort (asc)");
             }
         });
-    }
 
-    public static List<Movie> filterMoviesTestHelper(List<Movie> movies, String searchQuery, String selectedGenre) {
-        return filterMovies(movies, searchQuery, selectedGenre);
-    }
 
-    public static List<Movie> sortMoviesTestHelper(List<Movie> movies, boolean ascending) {
-        return sortMovies(movies, ascending);
     }
 }
