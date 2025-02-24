@@ -84,17 +84,4 @@ public class HomeController implements Initializable {
             }
         });
     }
-
-    public List<Movie> getObservableMovies() {
-        return new ArrayList<>(observableMovies);
-    }
-
-    // test helpers to call the same logic from JUnit
-    public static List<Movie> filterMoviesTestHelper(List<Movie> movies, String searchQuery, Genre selectedGenre) {
-        return filterMovies(movies, searchQuery, selectedGenre);
-    }
-
-    public static List<Movie> sortMoviesTestHelper(List<Movie> movies, boolean ascending) {
-        return sortMovies(movies, ascending);
-    }
 }
