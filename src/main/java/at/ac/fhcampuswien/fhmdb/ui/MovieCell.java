@@ -20,30 +20,24 @@ public class MovieCell extends ListCell<Movie> {
 
         if (empty || movie == null) {
             setText(null);
+            setGraphic(null);
         } else {
-            this.getStyleClass().add("movie-cell");
+            // Apply text styles
             title.setText(movie.getTitle());
-            detail.setText(
-                    movie.getDescription() != null
-                            ? movie.getDescription()
-                            : "No description available"
-            );
+            detail.setText(movie.getDescription() != null ? movie.getDescription() : "No description available");
 
-
-            // color scheme
+            // Set colors
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
-            // layout
-            title.fontProperty().set(title.getFont().font(20));
-            detail.setMaxWidth(this.getScene().getWidth() - 30);
+            // Set layout properties
+            title.setStyle("-fx-font-size: 20px;");
             detail.setWrapText(true);
             layout.setPadding(new Insets(10));
-            layout.spacingProperty().set(10);
-            layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
+            layout.setSpacing(10);
+
             setGraphic(layout);
         }
     }
 }
-

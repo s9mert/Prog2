@@ -48,7 +48,7 @@ class HomeControllerTest {
     @Test
     void filterMovies_byGenre_shouldReturnCorrectMovies() {
         List<Movie> result = HomeController.filterMovies(allMovies, "", Genre.DRAMA);
-        assertTrue(result.size() > 0);
+        assertFalse(result.isEmpty());
     }
 
     @Test
