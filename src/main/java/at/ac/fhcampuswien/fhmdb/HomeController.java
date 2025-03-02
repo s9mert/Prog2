@@ -37,7 +37,7 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton resetBtn;
 
-    public List<Movie> allMovies = Movie.initializeMovies(); // Load all movies
+    public List<Movie> allMovies = new ArrayList<>();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
     private boolean ascending = true; // Track sorting order
@@ -63,7 +63,11 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Initialize movie list
-        observableMovies.addAll(allMovies);
+        try {
+            allMovies = MovieAPI.getMovies(null, null, null, null);
+        } catch (Exception e) {
+            allMovies = new ArrayList<>();
+        }
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
