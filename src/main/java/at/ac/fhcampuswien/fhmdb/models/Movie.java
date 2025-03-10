@@ -7,11 +7,15 @@ public class Movie {
     private String title;
     private String description;
     private List<Genre> genres;
+    private int releaseYear;
+    private double rating;
 
-    public Movie(String title, String description,List<Genre> genres) {
+    public Movie(String title, String description,List<Genre> genres, int releaseYear, double rating) {
         this.title = title;
         this.description = description;
         this.genres = genres;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
     }
 
     public String getTitle() {
@@ -24,6 +28,14 @@ public class Movie {
 
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public double getRating() {
+        return rating;
     }
 }
 

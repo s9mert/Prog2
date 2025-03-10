@@ -26,6 +26,12 @@ public class HomeController implements Initializable {
     public TextField searchField; // Input field for search query
 
     @FXML
+    public TextField releaseYearField;
+
+    @FXML
+    public TextField ratingFromField;
+
+    @FXML
     public JFXListView<Movie> movieListView; // List view to display movies
 
     @FXML
@@ -43,13 +49,8 @@ public class HomeController implements Initializable {
     private boolean ascending = true; // Track sorting order
 
     // Method to filter movies based on search query and selected genre
-    public static List<Movie> filterMovies(List<Movie> movies, String query, Genre genre) {
-        return movies.stream()
-                .filter(m -> (query == null || query.isEmpty() ||
-                        m.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                        m.getDescription().toLowerCase().contains(query.toLowerCase())))
-                .filter(m -> genre == null || m.getGenres().contains(genre))
-                .toList();
+    public static List<Movie> filterMovies(String query, Genre genre, int releaseYear, double ratingFrom) {
+        return MovieAPI.getMovies(query, genre == null ? null : genre.toString(), releaseYear == 0 ? null : String.valueOf(releaseYear), ratingFrom == 0 ? null : String.valueOf(ratingFrom));
     }
 
     // Method to sort movies alphabetically
@@ -68,6 +69,7 @@ public class HomeController implements Initializable {
         } catch (Exception e) {
             allMovies = new ArrayList<>();
         }
+        observableMovies.addAll(allMovies);
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
@@ -80,7 +82,7 @@ public class HomeController implements Initializable {
             String searchQuery = searchField.getText() == null ? "" : searchField.getText().trim();
             Genre selectedGenre = genreComboBox.getValue();
             observableMovies.clear();
-            observableMovies.addAll(filterMovies(allMovies, searchQuery, selectedGenre));
+            observableMovies.addAll(filterMovies(searchQuery, selectedGenre, releaseYearField.getText().isEmpty() ? 0 : Integer.parseInt(releaseYearField.getText()), ratingFromField.getText().isEmpty() ? 0 : Double.parseDouble(ratingFromField.getText())));
         });
 
         // Sort button action
@@ -99,7 +101,8 @@ public class HomeController implements Initializable {
         resetBtn.setOnAction(actionEvent -> {
             searchField.clear();  // Löscht das Suchfeld
             genreComboBox.setValue(null);  // Setzt Genre auf "null" zurück
-
+            releaseYearField.clear();  // Löscht das Erscheinungsjahr
+            ratingFromField.clear();  // Löscht die Bewertung
             // Zeigt alle Filme wieder an
             observableMovies.setAll(allMovies);  // Alle Filme anzeigen
         });

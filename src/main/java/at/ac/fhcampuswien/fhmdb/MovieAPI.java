@@ -21,16 +21,16 @@ public class MovieAPI {
     public static List<Movie> getMovies (String query, String genre, String releaseYear, String ratingFrom){
         HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
 
-        if (query != null && !query.isEmpty()) {
+        if (query != null) {
             urlBuilder.addQueryParameter("query", query); //url?query=Film1
         }
-        if (genre != null && !genre.isEmpty()) {
+        if (genre != null) {
             urlBuilder.addQueryParameter("genre", genre); //url?genre=Action
         }
-        if (releaseYear != null && !releaseYear.isEmpty()) {
+        if (releaseYear != null) {
             urlBuilder.addQueryParameter("releaseYear", releaseYear); //url?releaseYear=2000
         }
-        if (ratingFrom != null && !ratingFrom.isEmpty()) {
+        if (ratingFrom != null) {
             urlBuilder.addQueryParameter("ratingFrom", ratingFrom); //url?ratingFrom=5
         }
 
