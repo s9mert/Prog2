@@ -10,7 +10,6 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class MovieAPI {
             }
             String json = response.body().string();
             Gson gson = new Gson();
-            Type listType = new TypeToken<Collection<Movie>>(){}.getType();
+            Type listType = new TypeToken<List<Movie>>(){}.getType();
             return gson.fromJson(json, listType);
         } catch (IOException e) {
             throw new RuntimeException(e);

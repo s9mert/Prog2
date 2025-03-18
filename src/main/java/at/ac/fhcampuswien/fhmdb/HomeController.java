@@ -13,10 +13,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
     @FXML
@@ -50,8 +49,27 @@ public class HomeController implements Initializable {
 
     // Method to filter movies based on search query and selected genre
     public static List<Movie> filterMovies(String query, Genre genre, int releaseYear, double ratingFrom) {
-        return MovieAPI.getMovies(query, genre == null ? null : genre.toString(), releaseYear == 0 ? null : String.valueOf(releaseYear), ratingFrom == 0 ? null : String.valueOf(ratingFrom));
+        // Retrieve all movies using the MovieAPI with the given genre, releaseYear, and rating filter
+        List<Movie> allMovies = MovieAPI.getMovies(
+                null,
+                genre == null ? null : genre.toString(),
+                releaseYear == 0 ? null : String.valueOf(releaseYear),
+                ratingFrom == 0 ? null : String.valueOf(ratingFrom)
+        );
+
+        // If query is empty or null, return all movies without filtering on title or description
+        if (query == null || query.trim().isEmpty()) {
+            return allMovies;
+        }
+
+        // Filter movies based on the query (matching both title and description)
+        String lowerCaseQuery = query.trim().toLowerCase();
+        return allMovies.stream()
+                .filter(movie -> movie.getTitle().toLowerCase().contains(lowerCaseQuery) ||
+                        movie.getDescription().toLowerCase().contains(lowerCaseQuery))
+                .collect(Collectors.toList());
     }
+
 
     // Method to sort movies alphabetically
     public static List<Movie> sortMovies(List<Movie> movies, boolean ascending) {
@@ -106,5 +124,35 @@ public class HomeController implements Initializable {
             // Zeigt alle Filme wieder an
             observableMovies.setAll(allMovies);  // Alle Filme anzeigen
         });
+    }
+
+    public static String getMostPopularActor(List<Movie> movies) {
+        return movies.stream()
+                .flatMap(movie -> movie.getMainCast().stream())
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse("No actor found");
+    }
+
+    public static int getLongestMovieTitle(List<Movie> movies) {
+        return movies.stream()
+                .map(Movie::getTitle)
+                .mapToInt(String::length)
+                .max()
+                .orElse(0);
+    }
+
+    public static long countMoviesFrom(List<Movie> movies, String director) {
+        return movies.stream()
+                .filter(movie -> movie.getDirector().equalsIgnoreCase(director))
+                .count();
+    }
+
+    public static List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
+        return movies.stream()
+                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
+                .collect(Collectors.toList());
     }
 }
