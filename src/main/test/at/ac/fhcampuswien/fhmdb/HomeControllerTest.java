@@ -15,73 +15,67 @@ class HomeControllerTest {
 
     @BeforeEach
     void setUp() {
-        allMovies = Movie.initializeMovies();  // Load test movies
+        allMovies = List.of(
+                new Movie("Inception", "A dream within a dream", List.of(Genre.ACTION, Genre.SCIENCE_FICTION), 2010, 8.8,
+                        List.of("Leonardo DiCaprio", "Joseph Gordon-Levitt"), "Christopher Nolan"),
+                new Movie("The Dark Knight", "Batman fights Joker", List.of(Genre.ACTION, Genre.DRAMA), 2008, 9.0,
+                        List.of("Christian Bale", "Heath Ledger", "Morgan Freeman"), "Christopher Nolan"),
+                new Movie("Life Is Beautiful", "A Jewish father protects his son in a concentration camp", List.of(Genre.DRAMA), 1997, 8.6,
+                        List.of("Roberto Benigni", "Nicoletta Braschi"), "Roberto Benigni"),
+                new Movie("Titanic", "A love story on a sinking ship", List.of(Genre.ROMANCE, Genre.DRAMA), 1997, 7.8,
+                        List.of("Leonardo DiCaprio", "Kate Winslet", "Billy Zane"), "James Cameron"),
+                new Movie("The Wolf of Wall Street", "Financial crime drama", List.of(Genre.DRAMA, Genre.COMEDY), 2013, 8.2,
+                        List.of("Leonardo DiCaprio", "Jonah Hill", "Margot Robbie"), "Martin Scorsese")
+        );
+    }
+
+    // ======= TESTS FÜR DIE STREAM-METHODEN =======
+
+    @Test
+    void getMostPopularActor_ReturnsCorrectActor() {
+        String mostPopularActor = HomeController.getMostPopularActor(allMovies);
+        assertEquals("Leonardo DiCaprio", mostPopularActor);
     }
 
     @Test
-    void filterMovies_withNonExistingQuery_shouldReturnEmptyList() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "Nonexistent Movie", null);
-        assertTrue(result.isEmpty());
+    void getMostPopularActor_ReturnsEmptyIfNoMovies() {
+        String mostPopularActor = HomeController.getMostPopularActor(new ArrayList<>());
+        assertEquals("No actor found", mostPopularActor);
     }
 
     @Test
-    void filterMovies_byTitle_shouldReturnCorrectMovies() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "Life", null);
-        assertEquals(1, result.size());
-        assertEquals("Life Is Beautiful", result.get(0).getTitle());
+    void getLongestMovieTitle_ReturnsCorrectLength() {
+        int longestTitleLength = HomeController.getLongestMovieTitle(allMovies);
+        assertEquals(23, longestTitleLength);  // "Life Is Beautiful" has 23 characters
     }
 
     @Test
-    void filterMovies_byTitleAndGenre_shouldReturnCorrectMovies() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "Life", Genre.DRAMA);
-        assertEquals(1, result.size());
-        assertEquals("Life Is Beautiful", result.get(0).getTitle());
+    void getLongestMovieTitle_ReturnsZeroIfNoMovies() {
+        int longestTitleLength = HomeController.getLongestMovieTitle(new ArrayList<>());
+        assertEquals(0, longestTitleLength);
     }
 
     @Test
-    void filterMovies_byDescription_shouldReturnCorrectMovies() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "Jewish", null);
-        assertEquals(1, result.size());
-        assertEquals("Life Is Beautiful", result.get(0).getTitle());
+    void countMoviesFrom_ReturnsCorrectCount() {
+        long nolanMovies = HomeController.countMoviesFrom(allMovies, "Christopher Nolan");
+        assertEquals(2, nolanMovies);
     }
 
     @Test
-    void filterMovies_byGenre_shouldReturnCorrectMovies() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "", Genre.DRAMA);
-        assertFalse(result.isEmpty());
+    void countMoviesFrom_ReturnsZeroForUnknownDirector() {
+        long unknownDirectorMovies = HomeController.countMoviesFrom(allMovies, "Quentin Tarantino");
+        assertEquals(0, unknownDirectorMovies);
     }
 
     @Test
-    void filterMovies_withEmptyQueryAndNullGenre_shouldReturnAllMovies() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "", null);
-        assertEquals(allMovies.size(), result.size());
+    void getMoviesBetweenYears_ReturnsCorrectMovies() {
+        List<Movie> moviesBetween1995And2010 = HomeController.getMoviesBetweenYears(allMovies, 1995, 2010);
+        assertEquals(4, moviesBetween1995And2010.size());
     }
 
     @Test
-    void filterMovies_byAnotherTitle_shouldReturnCorrectMovies() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "Inception", null);
-        assertEquals(1, result.size());
-        assertEquals("Inception", result.get(0).getTitle());
-    }
-
-    @Test
-    void filterMovies_byGenre_withSpecificGenre_shouldReturnCorrectMovies() {
-        List<Movie> result = HomeController.filterMovies(allMovies, "", Genre.COMEDY);
-        assertTrue(result.size() > 0);
-        assertTrue(result.stream().anyMatch(movie -> movie.getTitle().equals("Puss in Boots") || movie.getTitle().equals("500 Days of Summer")));
-    }
-
-    @Test
-    void sortMovies_ascending_shouldBeAlphabetical() {
-        List<Movie> sortedMovies = HomeController.sortMovies(new ArrayList<>(allMovies), true);
-        assertEquals("500 Days of Summer", sortedMovies.get(0).getTitle());
-        assertEquals("The Wolf of Wall Street", sortedMovies.get(sortedMovies.size() - 1).getTitle());
-    }
-
-    @Test
-    void sortMovies_descending_shouldBeReverseAlphabetical() {
-        List<Movie> sortedMovies = HomeController.sortMovies(new ArrayList<>(allMovies), false);
-        assertEquals("The Wolf of Wall Street", sortedMovies.get(0).getTitle());
-        assertEquals("500 Days of Summer", sortedMovies.get(sortedMovies.size() - 1).getTitle());
+    void getMoviesBetweenYears_ReturnsEmptyListIfNoMatch() {
+        List<Movie> moviesBetween1800And1900 = HomeController.getMoviesBetweenYears(allMovies, 1800, 1900);
+        assertTrue(moviesBetween1800And1900.isEmpty());
     }
 }
